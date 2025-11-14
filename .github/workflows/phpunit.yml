@@ -51,7 +51,7 @@ jobs:
         working-directory: ${{ inputs.root-directory }}
         run: |
           if [ -f "vendor/bin/phpunit" ]; then
-            echo "path=vendor/bin/phpunit" >> "$GITHUB_OUTPUT"
+            echo "path=$(realpath vendor/bin/phpunit)" >> "$GITHUB_OUTPUT"
           elif command -v phpunit >/dev/null 2>&1; then
             echo "path=$(command -v phpunit)" >> "$GITHUB_OUTPUT"
           else
