@@ -28,6 +28,10 @@ jobs:
   phpunit:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -57,7 +61,6 @@ jobs:
 
       - name: Run PHPUnit
         run: |
-          cd ${{ inputs.working-directory }};
           if [ "${{ inputs.coverage }}" = "true" ]; then
             "${{ steps.phpunit.outputs.path }}" --coverage-clover=coverage.xml
           else
