@@ -47,7 +47,7 @@ jobs:
         working-directory: ${{ inputs.root-directory }}
         run: |
           if [ -f "vendor/bin/phpunit" ]; then
-            echo "path=vendor/bin/phpunit" >> "$GITHUB_OUTPUT"
+            echo "path=$(realpath vendor/bin/phpunit)" >> "$GITHUB_OUTPUT"
           elif command -v phpunit >/dev/null 2>&1; then
             echo "path=$(command -v phpunit)" >> "$GITHUB_OUTPUT"
           else
@@ -56,15 +56,17 @@ jobs:
           fi   
 
       - name: Run PHPUnit
+        working-directory: ${{ inputs.working-directory }}
         run: |
           TEST_PATH="${{ inputs.working-directory }}"
           
           if [ "${{ inputs.coverage }}" = "true" ]; then
-            "${{ steps.phpunit.outputs.path }}" $TEST_PATH --coverage-clover=coverage.xml
+            "${{ steps.phpunit.outputs.path }}" --coverage-clover=coverage.xml
           else
-            "${{ steps.phpunit.outputs.path }}" $TEST_PATH
+            "${{ steps.phpunit.outputs.path }}"
           fi
 
+# May be implemented properly in the future
       - name: Upload coverage (optional)
         if: ${{ inputs.coverage }}
         uses: actions/upload-artifact@v4
