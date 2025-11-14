@@ -13,6 +13,11 @@ on:
         required: false
         default: false
         type: boolean
+      test-directory:
+        description: "Working directory for running tests"
+        required: false
+        default: "."
+        type: string
 
 jobs:
   phpunit:
@@ -34,9 +39,9 @@ jobs:
       - name: Run PHPUnit
         run: |
           if [ "${{ inputs.coverage }}" = "true" ]; then
-            vendor/bin/phpunit --coverage-clover=coverage.xml
+            vendor/bin/phpunit "${{ inputs.test-directory }}" --coverage-clover=coverage.xml
           else
-            vendor/bin/phpunit
+            vendor/bin/phpunit "${{ inputs.test-directory }}"
           fi
 
       - name: Upload coverage (optional)
