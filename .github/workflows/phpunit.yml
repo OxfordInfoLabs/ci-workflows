@@ -13,8 +13,13 @@ on:
         required: false
         default: false
         type: boolean
-      test-directory:
-        description: "Working directory for running tests"
+      working-directory:
+        description: "Directory to run tests in"
+        required: false
+        default: "."
+        type: string
+      root-directory:
+        description: "Project root"
         required: false
         default: "."
         type: string
@@ -34,14 +39,29 @@ jobs:
           coverage: ${{ inputs.coverage && 'xdebug' || 'none' }}
 
       - name: Install dependencies
+        working-directory: ${{ inputs.root-directory }}
         run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Determine phpunit executable
+        id: phpunit
+        working-directory: ${{ inputs.root-directory }}
+        run: |
+          if [ -f "vendor/bin/phpunit" ]; then
+            echo "path=vendor/bin/phpunit" >> "$GITHUB_OUTPUT"
+          elif command -v phpunit >/dev/null 2>&1; then
+            echo "path=$(command -v phpunit)" >> "$GITHUB_OUTPUT"
+          else
+            echo "PHPUnit not found in vendor or PATH" >&2
+            exit 1
+          fi   
 
       - name: Run PHPUnit
         run: |
+          cd ${{ inputs.test-directory }};
           if [ "${{ inputs.coverage }}" = "true" ]; then
-            vendor/bin/phpunit "${{ inputs.test-directory }}" --coverage-clover=coverage.xml
+            "${{ steps.phpunit.outputs.path }}" --coverage-clover=coverage.xml
           else
-            vendor/bin/phpunit "${{ inputs.test-directory }}"
+            "${{ steps.phpunit.outputs.path }}"
           fi
 
       - name: Upload coverage (optional)
