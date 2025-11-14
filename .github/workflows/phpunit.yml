@@ -28,10 +28,6 @@ jobs:
   phpunit:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: ${{ inputs.working-directory }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,7 +47,7 @@ jobs:
         working-directory: ${{ inputs.root-directory }}
         run: |
           if [ -f "vendor/bin/phpunit" ]; then
-            echo "path=$(realpath vendor/bin/phpunit)" >> "$GITHUB_OUTPUT"
+            echo "path=vendor/bin/phpunit" >> "$GITHUB_OUTPUT"
           elif command -v phpunit >/dev/null 2>&1; then
             echo "path=$(command -v phpunit)" >> "$GITHUB_OUTPUT"
           else
@@ -61,10 +57,12 @@ jobs:
 
       - name: Run PHPUnit
         run: |
+          TEST_PATH="${{ inputs.working-directory }}"
+          
           if [ "${{ inputs.coverage }}" = "true" ]; then
-            "${{ steps.phpunit.outputs.path }}" --coverage-clover=coverage.xml
+            "${{ steps.phpunit.outputs.path }}" $TEST_PATH --coverage-clover=coverage.xml
           else
-            "${{ steps.phpunit.outputs.path }}"
+            "${{ steps.phpunit.outputs.path }}" $TEST_PATH
           fi
 
       - name: Upload coverage (optional)
