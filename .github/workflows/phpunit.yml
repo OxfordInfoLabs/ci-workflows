@@ -57,7 +57,7 @@ jobs:
 
       - name: Run PHPUnit
         run: |
-          cd ${{ inputs.test-directory }};
+          cd ${{ inputs.working-directory }};
           if [ "${{ inputs.coverage }}" = "true" ]; then
             "${{ steps.phpunit.outputs.path }}" --coverage-clover=coverage.xml
           else
