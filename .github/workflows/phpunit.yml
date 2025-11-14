@@ -1,0 +1,47 @@
+name: "PHPUnit Tests"
+
+on:
+  workflow_call:
+    inputs:
+      php-version:
+        description: "PHP version to use"
+        required: false
+        default: "8.2"
+        type: string
+      coverage:
+        description: "Generate code coverage?"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php-version }}
+          coverage: ${{ inputs.coverage && 'xdebug' || 'none' }}
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Run PHPUnit
+        run: |
+          if [ "${{ inputs.coverage }}" = "true" ]; then
+            vendor/bin/phpunit --coverage-clover=coverage.xml
+          else
+            vendor/bin/phpunit
+          fi
+
+      - name: Upload coverage (optional)
+        if: ${{ inputs.coverage }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: phpunit-coverage
+          path: coverage.xml
