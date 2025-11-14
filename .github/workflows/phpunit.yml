@@ -58,8 +58,6 @@ jobs:
       - name: Run PHPUnit
         working-directory: ${{ inputs.working-directory }}
         run: |
-          TEST_PATH="${{ inputs.working-directory }}"
-          
           if [ "${{ inputs.coverage }}" = "true" ]; then
             "${{ steps.phpunit.outputs.path }}" --coverage-clover=coverage.xml
           else
