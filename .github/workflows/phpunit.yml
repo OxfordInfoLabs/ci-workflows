@@ -43,6 +43,7 @@ jobs:
           php-version: ${{ inputs.php-version }}
           coverage: ${{ inputs.coverage && 'xdebug' || 'none' }}
           extensions: ${{ inputs.extensions }}
+          ini-values: xdebug.mode=debug
 
       - name: Install dependencies
         working-directory: ${{ inputs.root-directory }}
@@ -70,7 +71,7 @@ jobs:
             "${{ steps.phpunit.outputs.path }}"
           fi
 
-# May be implemented properly in the future
+      # May be implemented properly in the future
       - name: Upload coverage (optional)
         if: ${{ inputs.coverage }}
         uses: actions/upload-artifact@v4
