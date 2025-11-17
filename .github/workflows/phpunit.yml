@@ -13,6 +13,11 @@ on:
         required: false
         default: false
         type: boolean
+      extenstions:
+        description: "Comma-separated PHP extensions"
+        required: false
+        default: "xdebug"
+        type: string
       working-directory:
         description: "Directory to run tests in"
         required: false
@@ -37,6 +42,7 @@ jobs:
         with:
           php-version: ${{ inputs.php-version }}
           coverage: ${{ inputs.coverage && 'xdebug' || 'none' }}
+          extensions: ${{ inputs.extensions }}
 
       - name: Install dependencies
         working-directory: ${{ inputs.root-directory }}
