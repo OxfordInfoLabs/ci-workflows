@@ -8,11 +8,11 @@ on:
         required: false
         default: "8.2"
         type: string
-#      coverage:
-#        description: "Generate code coverage?"
-#        required: false
-#        default: false
-#        type: boolean
+      #coverage:
+        #description: "Generate code coverage?"
+        #required: false
+        #default: false
+        #type: boolean
       extensions:
         description: "Comma-separated PHP extensions"
         required: false
@@ -41,7 +41,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ inputs.php-version }}
-#          coverage: ${{ inputs.coverage && 'xdebug' || 'none' }}
+          #coverage: ${{ inputs.coverage && 'xdebug' || 'none' }}
           extensions: ${{ inputs.extensions }}
 
       - name: Install dependencies
@@ -63,17 +63,18 @@ jobs:
 
       - name: Run PHPUnit
         working-directory: ${{ inputs.working-directory }}
-        run: |
-#          if [ "${{ inputs.coverage }}" = "true" ]; then
-#            "${{ steps.phpunit.outputs.path }}" --coverage-clover=coverage.xml
-#          else
-            "${{ steps.phpunit.outputs.path }}"
-#          fi
+        run: "${{ steps.phpunit.outputs.path }}"
+          #|
+          # if [ "${{ inputs.coverage }}" = "true" ]; then
+          #   "${{ steps.phpunit.outputs.path }}" --coverage-clover=coverage.xml
+          # else
+          #  "${{ steps.phpunit.outputs.path }}"
+          #fi
 
       # May be implemented properly in the future
-#      - name: Upload coverage (optional)
-#        if: ${{ inputs.coverage }}
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: phpunit-coverage
-#          path: coverage.xml
+      #- name: Upload coverage (optional)
+      #  if: ${{ inputs.coverage }}
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: phpunit-coverage
+      #    path: coverage.xml
