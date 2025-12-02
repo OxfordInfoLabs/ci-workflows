@@ -8,11 +8,11 @@ on:
         required: false
         default: "8.2"
         type: string
-      #coverage:
-        #description: "Generate code coverage?"
-        #required: false
-        #default: false
-        #type: boolean
+      coverage:
+        description: "Generate code coverage?"
+        required: false
+        default: false
+        type: boolean
       extensions:
         description: "Comma-separated PHP extensions"
         required: false
